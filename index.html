@@ -1,30 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title></title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      height: 100%;
-      overflow: hidden;
-    }
-    video {
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      background: black;
-    }
+    html, body { margin: 0; height: 100%; background: #000; }
+    #tap { position: fixed; inset: 0; display: grid; place-items: center; background: #000; }
+    #tap button { font-size: 18px; padding: 14px 18px; border-radius: 14px; border: 0; background: #111; color: #fff; }
+    video { width: 100vw; height: 100vh; object-fit: cover; background: #000; display: none; }
   </style>
 </head>
 <body>
+  <div id="tap"><button>Tap to play</button></div>
 
-<video controls playsinline>
-  <source src="https://www.dropbox.com/scl/fi/7vlp8lx8bsudow9r02xpu/video.mp4?raw=1" type="video/mp4">
-</video>
+  <video id="v" playsinline preload="metadata">
+    <source src="./video.mp4" type="video/mp4">
+  </video>
 
+  <script>
+    const tap = document.getElementById('tap');
+    const v = document.getElementById('v');
+
+    tap.addEventListener('click', async () => {
+      tap.style.display = 'none';
+      v.style.display = 'block';
+      v.controls = false;
+      try { await v.play(); } catch (e) { v.controls = true; }
+    });
+
+    // If the video fails to load, show a simple fallback link
+    v.addEventListener('error', () => {
+      tap.innerHTML = '<a href="./video.mp4" style="color:#fff;font-family:system-ui;">Open the video</a>';
+      tap.style.display = 'grid';
+      v.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
